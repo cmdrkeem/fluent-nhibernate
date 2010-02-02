@@ -1,5 +1,5 @@
 using System.Linq;
-using FluentNHibernate.Automapping;
+using FluentNHibernate.Automapping.Rules;
 using FluentNHibernate.MappingModel;
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.Utils.Reflection;
@@ -10,18 +10,18 @@ namespace FluentNHibernate.Testing.Automapping
     [TestFixture]
     public class AutoMapVersionTester
     {
-        private AutoMapVersion mapper;
+        private VersionStep mapper;
 
         [SetUp]
         public void CreateMapper()
         {
-            mapper = new AutoMapVersion();
+            mapper = new VersionStep();
         }
 
         [Test]
         public void ShouldMapByteArray()
         {
-            mapper.MapsProperty(typeof(Target).GetProperty("Version").ToMember()).ShouldBeTrue();
+            mapper.IsMappable(typeof(Target).GetProperty("Version").ToMember()).ShouldBeTrue();
         }
 
         [Test]
@@ -86,18 +86,18 @@ namespace FluentNHibernate.Testing.Automapping
     [TestFixture]
     public class When_mapping_a_byte_array_version_property_and_the_version_property_is_on_a_base_class
     {
-        private AutoMapVersion mapper;
+        private VersionStep mapper;
 
         [SetUp]
         public void CreateMapper()
         {
-            mapper = new AutoMapVersion();
+            mapper = new VersionStep();
         }
 
         [Test]
         public void ShouldMapByteArray()
         {
-            mapper.MapsProperty(ReflectionHelper.GetMember<BaseEntityClass>(x => x.Version)).ShouldBeTrue();
+            mapper.IsMappable(ReflectionHelper.GetMember<BaseEntityClass>(x => x.Version)).ShouldBeTrue();
         }
 
         [Test]

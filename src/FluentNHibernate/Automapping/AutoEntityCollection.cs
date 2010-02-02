@@ -1,3 +1,4 @@
+using FluentNHibernate.Automapping.Rules;
 using FluentNHibernate.MappingModel;
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.MappingModel.Collections;
@@ -5,20 +6,20 @@ using FluentNHibernate.Utils;
 
 namespace FluentNHibernate.Automapping
 {
-    public class AutoEntityCollection : IAutoMapper
+    public class AutoEntityCollection : IAutomappingStep
     {
-        readonly AutoMappingExpressions expressions;
+        readonly IAutomappingDiscoveryRules rules;
         readonly AutoKeyMapper keys;
         AutoCollectionCreator collections;
 
-        public AutoEntityCollection(AutoMappingExpressions expressions)
+        public AutoEntityCollection(IAutomappingDiscoveryRules rules)
         {
-            this.expressions = expressions;
-            keys = new AutoKeyMapper(expressions);
+            this.rules = rules;
+            keys = new AutoKeyMapper(rules);
             collections = new AutoCollectionCreator();
         }
 
-        public bool MapsProperty(Member property)
+        public bool IsMappable(Member property)
         {
             return property.CanWrite &&
                 property.PropertyType.Namespace.In("System.Collections.Generic", "Iesi.Collections.Generic");

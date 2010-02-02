@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using FluentNHibernate.Automapping.Rules;
 using FluentNHibernate.MappingModel;
 using FluentNHibernate.MappingModel.ClassBased;
 using FluentNHibernate.MappingModel.Collections;
@@ -7,20 +8,20 @@ using FluentNHibernate.Utils;
 
 namespace FluentNHibernate.Automapping
 {
-    public class AutoSimpleTypeCollection : IAutoMapper
+    public class SimpleTypeCollectionStep : IAutomappingStep
     {
-        readonly AutoMappingExpressions expressions;
+        readonly IAutomappingDiscoveryRules rules;
         readonly AutoKeyMapper keys;
         readonly AutoCollectionCreator collections;
 
-        public AutoSimpleTypeCollection(AutoMappingExpressions expressions)
+        public SimpleTypeCollectionStep(IAutomappingDiscoveryRules rules)
         {
-            this.expressions = expressions;
-            keys = new AutoKeyMapper(expressions);
+            this.rules = rules;
+            keys = new AutoKeyMapper(rules);
             collections = new AutoCollectionCreator();
         }
 
-        public bool MapsProperty(Member property)
+        public bool IsMappable(Member property)
         {
             if (!property.PropertyType.IsGenericType)
                 return false;
@@ -57,7 +58,7 @@ namespace FluentNHibernate.Automapping
                 Type = new TypeReference(property.PropertyType.GetGenericArguments()[0])
             };
 
-            element.AddDefaultColumn(new ColumnMapping { Name = expressions.SimpleTypeCollectionValueColumn(property) });
+            element.AddDefaultColumn(new ColumnMapping { Name = rules.SimpleTypeCollectionValueColumnRule(property) });
             mapping.SetDefaultValue(x => x.Element, element);
         }
     }
